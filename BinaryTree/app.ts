@@ -11,10 +11,19 @@
 		{ id: 10 }
 	];
 
+	stuff = [
+		{ id: 1 },
+		{ id: 5 },
+		{ id: 2 },
+		{ id: 1 },
+		{ id: 8 }
+	];
+
 	var steve = BinaryTree.BinarySearchTree.fromArray(stuff);
 	console.log(steve);
-	console.log(steve.toString());
+	
 	//console.log(steve.find(10));
 	//console.log(steve.remove(8));
-	console.log(steve.length);
+	console.log(steve.height());
+	console.log(steve.toString());
 };

@@ -9,12 +9,19 @@ window.onload = function () {
         { id: 5 },
         { id: 10 }
     ];
+    stuff = [
+        { id: 1 },
+        { id: 5 },
+        { id: 2 },
+        { id: 1 },
+        { id: 8 }
+    ];
     var steve = BinaryTree.BinarySearchTree.fromArray(stuff);
     console.log(steve);
-    console.log(steve.toString());
     //console.log(steve.find(10));
     //console.log(steve.remove(8));
-    console.log(steve.length);
+    console.log(steve.height());
+    console.log(steve.toString());
 };
 //left child node is always less than the current data, right is greater.  Cannot have duplicate data values.
 var BinaryTree;
@@ -54,13 +61,15 @@ var BinaryTree;
                 parent = currentNode;
                 if (this.compareNodeToData(currentNode, data) === BinarySearchTree.NODE_LEFT) {
                     currentNode = currentNode.left;
-                    if (currentNode === null)
+                    if (currentNode === null) {
                         return parent.left = new Node(data);
+                    }
                 }
                 else if (this.compareNodeToData(currentNode, data) === BinarySearchTree.NODE_RIGHT) {
                     currentNode = currentNode.right;
-                    if (currentNode === null)
+                    if (currentNode === null) {
                         return parent.right = new Node(data);
+                    }
                 }
             }
         };
@@ -128,6 +137,28 @@ var BinaryTree;
             if (node.right !== null) {
                 this.traverseAll(node.right, strategy);
             }
+        };
+        BinarySearchTree.prototype.height = function () {
+            //this sucks balls, perhaps this should be better
+            var heights = [];
+            var height = 0;
+            var all = function (node) {
+                height++;
+                console.log(node, height, node.left === null, node.right === null);
+                if (node.left === null && node.right === null) {
+                    heights.push(height);
+                    height = 0;
+                }
+                if (node.left !== null) {
+                    all(node.left);
+                }
+                if (node.right !== null) {
+                    all(node.right);
+                }
+            };
+            all(this.root);
+            console.log(heights);
+            return heights;
         };
         //static members
         BinarySearchTree.NODE_EMPTY = 0;

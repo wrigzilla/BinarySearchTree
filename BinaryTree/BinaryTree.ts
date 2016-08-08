@@ -54,14 +54,21 @@ namespace BinaryTree
 				if (this.compareNodeToData(currentNode, data) === BinarySearchTree.NODE_LEFT)
 				{
 					currentNode = currentNode.left;
-					if (currentNode === null) return parent.left = new Node(data);
+					if (currentNode === null)
+					{
+						return parent.left = new Node(data);
+					}
 				}
 				else if (this.compareNodeToData(currentNode, data) === BinarySearchTree.NODE_RIGHT)
 				{
 					currentNode = currentNode.right;
-					if (currentNode === null) return parent.right = new Node(data);
+					if (currentNode === null)
+					{
+						return parent.right = new Node(data);
+					}
 				}
 			}
+			
 		}
 
 		public find(id: number, strat: Function = null): Node
@@ -100,7 +107,6 @@ namespace BinaryTree
 			{
 				if (type === BinarySearchTree.NODE_LEFT) x.left = null;
 				if (type === BinarySearchTree.NODE_RIGHT) x.right = null;
-
 			};
 			var removedNode = this.find(id, removeLeftOrRightNode);
 			this.length = this.toArray().length;
@@ -125,7 +131,6 @@ namespace BinaryTree
 			return this.toArray().join(",");
 		}
 
-
 		//private methods
 		private compareNodeToData(node: Node, data: INodeData): number
 		{
@@ -144,6 +149,36 @@ namespace BinaryTree
 			{
 				this.traverseAll(node.right, strategy);
 			}
+		}
+
+		public height(): number[]
+		{
+			//this sucks balls, perhaps this should be better
+
+			var heights: Array<number> = [];
+
+			var height: number = 0;
+			var all = (node: Node) =>
+			{
+				height++;
+				console.log(node, height, node.left === null, node.right === null);
+				if (node.left === null && node.right === null)
+				{
+					heights.push(height);
+					height = 0;
+				}
+				if (node.left !== null)
+				{
+					all(node.left);
+				}
+				if (node.right !== null)
+				{
+					all(node.right);
+				}
+			}
+			all(this.root);
+			console.log(heights);
+			return heights;
 		}
 	}
 }
