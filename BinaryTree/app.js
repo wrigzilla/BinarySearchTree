@@ -9,13 +9,6 @@ window.onload = function () {
         { id: 5 },
         { id: 10 }
     ];
-    stuff = [
-        { id: 1 },
-        { id: 5 },
-        { id: 2 },
-        { id: 1 },
-        { id: 8 }
-    ];
     var steve = BinaryTree.BinarySearchTree.fromArray(stuff);
     console.log(steve);
     //console.log(steve.find(10));
@@ -26,6 +19,14 @@ window.onload = function () {
 //left child node is always less than the current data, right is greater.  Cannot have duplicate data values.
 var BinaryTree;
 (function (BinaryTree) {
+    var SearchResult = (function () {
+        function SearchResult(parent, child) {
+            this.parent = parent;
+            this.child = child;
+        }
+        return SearchResult;
+    }());
+    BinaryTree.SearchResult = SearchResult;
     var Node = (function () {
         function Node(data, left, right) {
             if (left === void 0) { left = null; }
@@ -76,39 +77,48 @@ var BinaryTree;
         BinarySearchTree.prototype.find = function (id, strat) {
             if (strat === void 0) { strat = null; }
             var result = null;
+            var parent = null;
             var findId = function (node, id) {
                 if (node.left !== null) {
+                    parent = node;
                     if (node.left.data.id === id) {
                         result = node.left;
-                        if (strat !== null)
+                        if (strat !== null) {
                             strat(node, BinarySearchTree.NODE_LEFT);
-                        return;
+                        }
+                        return new SearchResult(parent, result);
                     }
                     findId(node.left, id);
                 }
                 if (node.right !== null) {
+                    parent = node;
                     if (node.right.data.id === id) {
                         result = node.right;
-                        if (strat !== null)
+                        if (strat !== null) {
                             strat(node, BinarySearchTree.NODE_RIGHT);
-                        return;
+                            return new SearchResult(parent, result);
+                        }
                     }
                     findId(node.right, id);
                 }
             };
             findId(this.root, id);
-            return result;
+            return new SearchResult(parent, result);
         };
         BinarySearchTree.prototype.remove = function (id) {
-            var removeLeftOrRightNode = function (x, type) {
-                if (type === BinarySearchTree.NODE_LEFT)
-                    x.left = null;
-                if (type === BinarySearchTree.NODE_RIGHT)
-                    x.right = null;
-            };
-            var removedNode = this.find(id, removeLeftOrRightNode);
+            //var removeLeftOrRightNode: Function = (x: Node, type): Node =>
+            //{
+            //	if (type === BinarySearchTree.NODE_LEFT) x.left = null;
+            //	if (type === BinarySearchTree.NODE_RIGHT) x.right = null;
+            //	return x;
+            //};
+            //var results = this.find(id, removeLeftOrRightNode);
+            //this.length = this.toArray().length;
+            //return removedNode;
+            this.find(id);
+            //will need to recalculate the length after removal
+            //could maybe optimize by -- but not sure what kind of wank this will unleash
             this.length = this.toArray().length;
-            return removedNode;
         };
         BinarySearchTree.prototype.balance = function () {
             //optimize tree for searching

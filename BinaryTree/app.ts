@@ -11,13 +11,8 @@
 		{ id: 10 }
 	];
 
-	stuff = [
-		{ id: 1 },
-		{ id: 5 },
-		{ id: 2 },
-		{ id: 1 },
-		{ id: 8 }
-	];
+
+
 
 	var steve = BinaryTree.BinarySearchTree.fromArray(stuff);
 	console.log(steve);

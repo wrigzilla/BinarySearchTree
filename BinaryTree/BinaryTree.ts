@@ -7,6 +7,16 @@ namespace BinaryTree
 		id: number;
 	}
 
+	export class SearchResult
+	{
+		constructor(
+			public parent: Node,
+			public child: Node,
+			public fork: number
+		)
+		{ }
+	}
+
 	export class Node
 	{
 		constructor(
@@ -71,46 +81,68 @@ namespace BinaryTree
 			
 		}
 
-		public find(id: number, strat: Function = null): Node
+		public find(id: number, strat: Function = null): SearchResult
 		{
-			var result = null;
-			var findId: Function = (node: Node, id: number): void =>
+			var result: Node = null;
+			var parent: Node = null;
+
+			var findId: Function = (node: Node, id: number): SearchResult =>
 			{
 				if (node.left !== null)
 				{
+					parent = node;
 					if (node.left.data.id === id)
 					{
 						result = node.left;
-						if (strat !== null) strat(node, BinarySearchTree.NODE_LEFT);
-						return;
+						if (strat !== null)
+						{
+							strat(node, BinarySearchTree.NODE_LEFT);
+						}
+						return new SearchResult(parent, result, BinarySearchTree.NODE_LEFT);
 					}
 					findId(node.left, id);
 				}
 				if (node.right !== null)
 				{
+					parent = node;
 					if (node.right.data.id === id)
 					{
 						result = node.right;
-						if (strat !== null) strat(node, BinarySearchTree.NODE_RIGHT);
-						return;
+						if (strat !== null)
+						{
+							strat(node, BinarySearchTree.NODE_RIGHT);
+							return new SearchResult(parent, result, BinarySearchTree.NODE_RIGHT);
+						}
 					}
 					findId(node.right, id);
 				}
 			}
+
 			findId(this.root, id);
-			return result;
+
+
+			//balls this will need some sorting out or a refactor of this entire search methodology
+			//return new SearchResult(parent, result);
 		}
 
 		public remove(id: number)
 		{
-			var removeLeftOrRightNode: Function = (x: Node, type) =>
-			{
-				if (type === BinarySearchTree.NODE_LEFT) x.left = null;
-				if (type === BinarySearchTree.NODE_RIGHT) x.right = null;
-			};
-			var removedNode = this.find(id, removeLeftOrRightNode);
+			//var removeLeftOrRightNode: Function = (x: Node, type): Node =>
+			//{
+			//	if (type === BinarySearchTree.NODE_LEFT) x.left = null;
+			//	if (type === BinarySearchTree.NODE_RIGHT) x.right = null;
+			//	return x;
+			//};
+			//var results = this.find(id, removeLeftOrRightNode);
+			//this.length = this.toArray().length;
+			//return removedNode;
+
+			this.find(id);
+
+
+			//will need to recalculate the length after removal
+			//could maybe optimize by -- but not sure what kind of wank this will unleash
 			this.length = this.toArray().length;
-			return removedNode;
 		}
 
 		public balance(): void
